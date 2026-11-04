@@ -32,6 +32,15 @@ def home():
 @app.route("/about")
 def about():
     return render_template("about.html")
+@app.route("/admin")
+def admin():
+    conn = get_db()
+    messages = conn.execute(
+        "SELECT * FROM messages ORDER BY id DESC"
+    ).fetchall()
+    conn.close()
+
+    return render_template("admin.html", messages=messages)
 
 @app.route("/contact", methods=["POST"])
 def contact():
