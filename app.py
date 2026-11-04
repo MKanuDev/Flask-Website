@@ -22,7 +22,7 @@ def contact():
 	    file.write(f"Date: {datetime.now()}\n")
 	    file.write("--------------------\n")
 
-	return "Message save! Thank you & be blessed, " + name
+	return "Message saved! Thank you & be blessed, " + name
 
 if __name__ == "__main__":
 	app.run(debug=True)
