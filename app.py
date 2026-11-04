@@ -1,7 +1,29 @@
+
 from flask import Flask, render_template, request
 from datetime import datetime
+import sqlite3
 
 app = Flask(__name__)
+
+# Connect to the database
+def get_db():
+    conn = sqlite3.connect("messages.db")
+    conn.row_factory = sqlite3.Row
+    return conn
+
+# Create the database table
+def create_table():
+    conn = get_db()
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS messages (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            message TEXT NOT NULL,
+            date TEXT NOT NULL
+        )
+    """)
+    conn.commit()
+    conn.close()
 
 @app.route("/")
 def home():
@@ -13,16 +35,20 @@ def about():
 
 @app.route("/contact", methods=["POST"])
 def contact():
-	name = request.form.get("name")
-	message = request.form.get("message")
+    name = request.form.get("name")
+    message = request.form.get("message")
 
-	with open("messages.txt", "a") as file:
-	    file.write(f"name: {name}\n")
-	    file.write(f"message: {message}\n")
-	    file.write(f"Date: {datetime.now()}\n")
-	    file.write("--------------------\n")
+    conn = get_db()
+    conn.execute(
+        "INSERT INTO messages (name, message, date) VALUES (?, ?, ?)",
+        (name, message, str(datetime.now()))
+    )
+    conn.commit()
+    conn.close()
 
-	return "Message saved! Thank you & be blessed, " + name
+    return "Message saved! Thank you & be blessed, " + name
+
+create_table()
 
 if __name__ == "__main__":
-	app.run(debug=True)
+    app.run(debug=True)
