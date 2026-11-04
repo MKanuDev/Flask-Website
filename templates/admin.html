@@ -1,1 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Messages</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
 
+<body>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+    </nav>
+
+    <div class="card">
+        <h1>Admin Messages</h1>
+
+        {% if messages %}
+            {% for msg in messages %}
+                <div class="card">
+                    <h2>{{ msg['name'] }}</h2>
+                    <p>{{ msg['message'] }}</p>
+                    <small>{{ msg['date'] }}</small>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No messages yet.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
